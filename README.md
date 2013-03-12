@@ -1,4 +1,4 @@
 R
 =
 
-R statistical package cookbook
+R Project for Statistical Computing Cookbook
