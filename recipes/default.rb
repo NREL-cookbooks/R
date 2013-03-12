@@ -8,9 +8,11 @@ if platform_family?("debian")
       apt-get update
       apt-get -f install r-base r-base-dev -y --force-yes
     EOH
+
+    not_if { ::File.exists?("/usr/bin/R") }
   end
 
-  not_if { ::File.exists?("/usr/bin/R") }
+
 end
 
 bash "install packages" do
@@ -23,4 +25,7 @@ bash "install packages" do
     wget http://cran.r-project.org/src/contrib/Rserve_0.6-8.tar.gz
     R CMD INSTALL Rserve_0.6-8.tar.gz
   EOH
+
+
+  not_if { ::File.exists?("/tmp/lhs_0.10.tar.gz") }
 end
