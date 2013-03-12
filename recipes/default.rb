@@ -4,7 +4,7 @@
 if platform_family?("debian")
   bash "install R" do
     code <<-EOH
-        apt-get install r-base
+        apt-get -f install r-base  -y
     EOH
   end
 end
