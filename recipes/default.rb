@@ -11,8 +11,6 @@ if platform_family?("debian")
 
     not_if { ::File.exists?("/usr/bin/R") }
   end
-
-
 end
 
 bash "install packages" do
@@ -22,8 +20,8 @@ bash "install packages" do
     wget http://cran.r-project.org/src/contrib/lhs_0.10.tar.gz
     R CMD INSTALL lhs_0.10.tar.gz
 
-    wget http://cran.r-project.org/src/contrib/Rserve_0.6-8.tar.gz
-    R CMD INSTALL Rserve_0.6-8.tar.gz
+    wget http://cran.r-project.org/src/contrib/Rserve_0.6-8.1.tar.gz
+    R CMD INSTALL Rserve_0.6-8.1.tar.gz
   EOH
 
 
