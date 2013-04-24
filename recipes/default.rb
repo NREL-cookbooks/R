@@ -13,17 +13,18 @@ if platform_family?("debian")
   end
 end
 
-bash "install packages" do
-  cwd "/tmp"
-  code <<-EOH
 
-    wget http://cran.r-project.org/src/contrib/lhs_0.10.tar.gz
-    R CMD INSTALL lhs_0.10.tar.gz
+node['R']['packages'].each do |package|
+  bash "install #{package['name']} version #{package['version']}" do
+    cwd "/tmp"
 
-    wget http://cran.r-project.org/src/contrib/Rserve_0.6-8.1.tar.gz
-    R CMD INSTALL Rserve_0.6-8.1.tar.gz
-  EOH
+    package_name = "#{package['name']}_#{package['version']}.tar.gz"
 
+    code <<-EOH
+      wget #{node['R']['source_url']}/#{package_name}
+      R CMD INSTALL #{package_name}
+    EOH
 
-  not_if { ::File.exists?("/tmp/lhs_0.10.tar.gz") }
+    not_if { ::File.exists?("/tmp/#{package_name}") }
+  end
 end
