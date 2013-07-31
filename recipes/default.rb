@@ -28,3 +28,9 @@ node['R']['packages'].each do |package|
     not_if { ::File.exists?("/tmp/#{package_name}") }
   end
 end
+
+template "/etc/Rserv.conf" do
+  source  "Rserv.conf.erb"
+  owner   "root"
+  mode    "0755"
+end
