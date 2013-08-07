@@ -14,6 +14,17 @@ if platform_family?("debian")
   end
 end
 
+
+# make sure that java is dynamically loaded (if needed)
+if node['R']['add_ld_path']
+  template "/etc/profile.d/r-config.sh" do
+    source "r-config.sh.erb"
+    owner "root"
+    mode "0775"
+  end
+end
+
+
 node['R']['packages'].each do |package|
   bash "install #{package['name']} version #{package['version']}" do
     cwd "/tmp"
