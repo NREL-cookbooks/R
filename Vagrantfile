@@ -21,20 +21,20 @@ Vagrant.configure("2") do |config|
 
 
     chef.json = {
-        'R' => {
-            'apt_distribution' => "precise/",
-            'apt_key' => "E084DAB9",
-            'package_source_url' => "http://cran.r-project.org/src/contrib",
-            'packages' => [
+        :R => {
+            :apt_distribution => "precise/",
+            :apt_key => "E084DAB9",
+            :package_source_url => "http://cran.r-project.org/src/contrib",
+            :packages => [
                 {
-                    'name' => 'lhs',
-                    'version' => '0.10'},
+                    :name => 'lhs',
+                    :version => '0.10'},
                 {
-                    'name' => 'Rserve',
-                    'version' => '0.6-8.1'},
+                    :name => 'Rserve',
+                    :version => '0.6-8.1'},
                 {
-                    'name' => 'triangle',
-                    'version' => '0.8'}
+                    :name => 'triangle',
+                    :version => '0.8'}
             ]
         }
     }
