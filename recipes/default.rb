@@ -26,22 +26,31 @@ end
 
 
 node[:R][:packages].each do |package|
+  puts "package name: #{package[:name]}"
   bash "install #{package[:name]} version #{package[:version]}" do
     cwd "/tmp"
+    if package[:name] == "rJava"
+      package_name = "#{package[:name]}_#{package[:version]}.tar.gz"
 
-    package_name = "#{package[:name]}_#{package[:version]}.tar.gz"
+      code <<-EOH
+        sudo R CMD javareconf
+        wget #{node[:R][:package_source_url]}/#{package_name}
+        R CMD INSTALL #{package_name}
+      EOH
+    else
+      package_name = "#{package[:name]}_#{package[:version]}.tar.gz"
 
-    code <<-EOH
-      wget #{node[:R][:package_source_url]}/#{package_name}
-      R CMD INSTALL #{package_name}
-    EOH
-
+      code <<-EOH
+        wget #{node[:R][:package_source_url]}/#{package_name}
+        R CMD INSTALL #{package_name}
+      EOH
+    end
     not_if { ::File.exists?("/tmp/#{package_name}") }
   end
 end
 
 template "/etc/Rserv.conf" do
-  source  "Rserv.conf.erb"
-  owner   "root"
-  mode    "0755"
+  source "Rserv.conf.erb"
+  owner "root"
+  mode "0755"
 end
