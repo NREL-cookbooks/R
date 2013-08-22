@@ -45,3 +45,29 @@ template "/etc/Rserv.conf" do
   owner   "root"
   mode    "0755"
 end
+
+template "/etc/init.d/Rserved" do
+  source "Rserved.erb"
+  owner   "root"
+  mode    "0755"
+end
+
+template "/usr/local/bin/R/Rserve.sh" do
+  source "Rserve.sh.erb"
+  owner   "root"
+  mode    "0755"
+end
+
+if node[:R][:rserve_start_on_boot]
+  bash "putting R into rc2.d" do
+
+  end
+
+end
+bash ""
+
+Rserved goes in the /etc/init.d/ dir
+
+Need to execute:  cd /etc/rc2.d; sudo ln -s ../init.d/Rserved S99Rserved
+
+Permissions on both files need to be chmod 774, at least that worked…

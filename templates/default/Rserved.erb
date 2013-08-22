@@ -1,0 +1,11 @@
+#!/bin/sh
+
+echo " * Launching Rserve daemon ..."
+
+RSERVE_HOME=<%= node[:R][:rserve_path] %>
+
+start-stop-daemon --start --chdir $RSERVE_HOME --chuid <%= node[:R][:rserve_user] %> --exec $RSERVE_HOME/Rserve.sh > /var/log/Rserve.log 2>&1 &
+
+echo " * Rserve daemon running ..."
+
+exit 0
