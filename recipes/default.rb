@@ -68,15 +68,8 @@ template "/usr/local/bin/R/Rserve.sh" do
 end
 
 if node[:R][:rserve_start_on_boot]
-  bash "putting R into rc2.d" do
-
-  end
-
+  sh_path = "/etc/init.d/Rserved"
+  sym_path = "/etc/rc2.d/S99Rserved"
+  ::FileUtils.ln_s(sh_path, sym_path)
 end
-bash ""
 
-Rserved goes in the /etc/init.d/ dir
-
-Need to execute:  cd /etc/rc2.d; sudo ln -s ../init.d/Rserved S99Rserved
-
-Permissions on both files need to be chmod 774, at least that worked…
