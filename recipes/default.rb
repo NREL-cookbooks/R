@@ -54,3 +54,22 @@ template "/etc/Rserv.conf" do
   owner "root"
   mode "0755"
 end
+
+template "/etc/init.d/Rserved" do
+  source "Rserved.erb"
+  owner   "root"
+  mode    "0755"
+end
+
+template "/usr/local/bin/R/Rserve.sh" do
+  source "Rserve.sh.erb"
+  owner   "root"
+  mode    "0755"
+end
+
+if node[:R][:rserve_start_on_boot]
+  sh_path = "/etc/init.d/Rserved"
+  sym_path = "/etc/rc2.d/S99Rserved"
+  ::FileUtils.ln_s(sh_path, sym_path)
+end
+
