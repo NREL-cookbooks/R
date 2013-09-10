@@ -26,7 +26,6 @@ end
 
 
 node[:R][:packages].each do |package|
-  puts "package name: #{package[:name]}"
   bash "install #{package[:name]} version #{package[:version]}" do
     cwd "/tmp"
     if package[:name] == "rJava"
