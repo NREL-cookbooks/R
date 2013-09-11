@@ -70,5 +70,11 @@ if node[:R][:rserve_start_on_boot]
   sh_path = "/etc/init.d/Rserved"
   sym_path = "/etc/rc2.d/S99Rserved"
   ::FileUtils.ln_sf(sh_path, sym_path)
+
+  # go ahead and kick it off now because we aren't going to reboot
+  bash "run Rserve" do
+    cd /etc/init.d/
+    ./Rserved
+  end
 end
 
