@@ -73,8 +73,10 @@ if node[:R][:rserve_start_on_boot]
 
   # go ahead and kick it off now because we aren't going to reboot
   bash "run Rserve" do
-    cd /etc/init.d/
-    ./Rserved
+    code <<-EOH
+      cd /etc/init.d/
+      ./Rserved
+    EOH
   end
 end
 
