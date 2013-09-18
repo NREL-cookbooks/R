@@ -54,28 +54,24 @@ template "/etc/Rserv.conf" do
   mode "0755"
 end
 
-template "/etc/init.d/Rserved" do
-  source "Rserved.erb"
-  owner   "root"
-  mode    "0755"
-end
-
-template "/usr/lib/R/bin/Rserve.sh" do
-  source "Rserve.sh.erb"
-  owner   "root"
-  mode    "0755"
-end
-
 if node[:R][:rserve_start_on_boot]
-  sh_path = "/etc/init.d/Rserved"
-  sym_path = "/etc/rc2.d/S99Rserved"
-  ::FileUtils.ln_sf(sh_path, sym_path)
+  template "/etc/init.d/Rserved" do
+    source "Rserved.erb"
+    owner "root"
+    mode "0755"
+  end
+
+  template "/usr/lib/R/bin/Rserve.sh" do
+    source "Rserve.sh.erb"
+    owner "root"
+    mode "0755"
+  end
 
   # go ahead and kick it off now because we aren't going to reboot
   bash "run Rserve" do
     code <<-EOH
       cd /etc/init.d/
-      ./Rserved
+      update-rc.d Rserved defaults
     EOH
   end
 end
