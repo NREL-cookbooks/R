@@ -68,11 +68,15 @@ if node[:R][:rserve_start_on_boot]
   end
 
   # go ahead and kick it off now because we aren't going to reboot
-  bash "run Rserve" do
+  bash "run Rserved" do
     code <<-EOH
       cd /etc/init.d/
       update-rc.d Rserved defaults
     EOH
+  end
+
+  service "Rserved" do
+    action :start
   end
 end
 
