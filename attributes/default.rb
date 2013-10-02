@@ -7,7 +7,6 @@ default[:R][:package_source_url] = "http://cran.r-project.org/src/contrib"
 # rserve settings
 default[:R][:rserve_start_on_boot] = false
 default[:R][:rserve_user] = "vagrant"
-default[:R][:rserve_path] = "/usr/bin/R/"
 default[:R][:rserve_log_path] = "/var/log/Rserve.log"
 
 

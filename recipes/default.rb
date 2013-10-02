@@ -62,7 +62,7 @@ if node[:R][:rserve_start_on_boot]
   end
 
   # go ahead and kick it off now because we aren't going to reboot
-  bash "configure Rserve deamon" do
+  bash "configure Rserve daemon" do
     code <<-EOH
       cd /etc/init.d/
       update-rc.d Rserve defaults
