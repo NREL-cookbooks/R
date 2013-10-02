@@ -55,28 +55,22 @@ template "/etc/Rserv.conf" do
 end
 
 if node[:R][:rserve_start_on_boot]
-  template "/etc/init.d/Rserved" do
-    source "Rserved.erb"
-    owner "root"
-    mode "0755"
-  end
-
-  template "/usr/lib/R/bin/Rserve.sh" do
-    source "Rserve.sh.erb"
+  template "/etc/init.d/Rserve" do
+    source "Rserve.erb"
     owner "root"
     mode "0755"
   end
 
   # go ahead and kick it off now because we aren't going to reboot
-  bash "configure Rserved" do
+  bash "configure Rserve deamon" do
     code <<-EOH
       cd /etc/init.d/
-      update-rc.d Rserved defaults
+      update-rc.d Rserve defaults
     EOH
   end
 
-  service "Rserved" do
-    action :start
+  service "Rserve" do
+    action :restart
   end
 end
 

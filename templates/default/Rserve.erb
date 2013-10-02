@@ -1,0 +1,78 @@
+#!/bin/sh
+
+### BEGIN INIT INFO
+# Provides:          Rserve
+# Required-Start:    $syslog
+# Required-Stop:     $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Init script for starting Rserve for R upon boot
+# Description:       Rserve is a TCP/IP server which allows other programs to use facilities of R
+### END INIT INFO
+
+# Author: nicholas long (nicholas.long@nrel.gov)
+
+DESC="Run Rserve"
+NAME=Rserve
+DIRHOME=/usr/lib/R/bin
+DAEMON=$DIRHOME/$NAME
+RBIN=/usr/bin/R
+LOGFILE=<%= node[:R][:rserve_log_path] %>
+CONFIGFILE=/etc/Rserv.conf
+RUN_AS=<%= node[:R][:rserve_user] %>
+RCMD="CMD Rserve --vanilla --no-save --gui-none"
+
+. /lib/lsb/init-functions
+
+stop_rserve()
+{
+  # Stop the Rserve daemon
+  start-stop-daemon --stop --quiet --oknodo --exec $DAEMON
+}
+
+start_rserve()
+{
+  # Start the Rsere daemon with the R CMD
+  start-stop-daemon --start --quiet --oknodo --chuid $RUN_AS --exec $RBIN -- $RCMD > $LOGFILE 2>&1;
+}
+
+
+case "$1" in
+  start)
+    log_daemon_msg "Starting rserve"
+    if start_rserve ; then
+      log_end_msg 0
+    else
+      log_end_msg 1
+    fi
+  ;;
+
+  stop)
+    log_daemon_msg "Stopping rserve"
+    if stop_rserve; then
+      log_end_msg 0
+    else
+      log_end_msg 1
+    fi
+    ;;
+
+    restart)
+      log_daemon_msg "Stopping rserve for restart"
+      stop_rserve
+      log_end_msg 0
+      sleep 2
+      log_daemon_msg "Restarting rserve"
+      start_rserve
+      log_end_msg 0
+    ;;
+
+    status)
+      status
+     ;;
+    *)
+      echo "Usage: $NAME {start|stop|restart|status}"
+      exit 1
+      ;;
+esac
+
+exit 0
