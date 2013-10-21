@@ -11,7 +11,7 @@ if platform_family?("debian")
             cd "/usr/local/lib"
             tar -xf #{package_name}
             cd R-#{node[:R][:build_version]}
-            sed -i 's/NCONNECTIONS 128/NCONNECTIONS 640/' src/main/connections.c
+            sed -i 's/NCONNECTIONS 128/NCONNECTIONS 2560/' src/main/connections.c
             sudo apt-get update
             sudo apt-get install gfortran -y
             sudo apt-get build-dep r-base -y
