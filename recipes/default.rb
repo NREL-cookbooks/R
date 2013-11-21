@@ -50,19 +50,21 @@ end
 node[:R][:packages].each do |package|
   bash "install #{package[:name]} version #{package[:version]}" do
     cwd "/tmp"
+    
+    package_url = package[:source_url] ? package[:source_url] : node[:R][:default_package_url] 
     if package[:name] == "rJava"
       package_name = "#{package[:name]}_#{package[:version]}.tar.gz"
-
+      
       code <<-EOH
             sudo R CMD javareconf
-            wget #{node[:R][:package_source_url]}/#{package_name}
+            wget #{package_url}/#{package_name}
             R CMD INSTALL #{package_name}
       EOH
     else
       package_name = "#{package[:name]}_#{package[:version]}.tar.gz"
 
       code <<-EOH
-            wget #{node[:R][:package_source_url]}/#{package_name}
+            wget #{package_url}/#{package_name}
             R CMD INSTALL #{package_name}
       EOH
     end
