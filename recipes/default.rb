@@ -72,6 +72,22 @@ node[:R][:packages].each do |package|
   end
 end
 
+node[:R][:local_packages].each do |package|
+  bash "install #{package[:name]} version #{package[:version]}" do
+    cwd "/tmp"
+    
+    package_url = node[:R][:local_package_url]
+    package_name = "#{package[:name]}_#{package[:version]}.tar.gz"
+
+    code <<-EOH
+          cp #{package_url}/#{package_name} .
+          R CMD INSTALL #{package_name}
+    EOH
+
+    not_if { ::File.exists?("/tmp/#{package_name}") }
+  end
+end
+
 template "/etc/Rserv.conf" do
   source "Rserv.conf.erb"
   owner "root"
