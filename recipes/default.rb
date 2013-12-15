@@ -2,6 +2,7 @@
 if platform_family?("debian")
   if node[:R][:build_from_source]
     bash "install and compile R-base from #{node[:R][:build_source_url]}" do
+      user "root"
       cwd "/tmp"
       package_name = "R-#{node[:R][:build_version]}.tar.gz"
 
@@ -12,9 +13,9 @@ if platform_family?("debian")
             tar -xf #{package_name}
             cd R-#{node[:R][:build_version]}
             sed -i 's/NCONNECTIONS 128/NCONNECTIONS 2560/' src/main/connections.c
-            sudo apt-get update
-            sudo apt-get install gfortran -y
-            sudo apt-get build-dep r-base -y
+            apt-get update
+            apt-get install gfortran -y
+            apt-get build-dep r-base -y
             ./configure --prefix=/usr --enable-R-shlib
             make -j4
             make install
@@ -31,7 +32,7 @@ if platform_family?("debian")
     end
 
     package "r-base" do
-      #version "2.15.3-1precise0precise1" # not sure why, but this isn't working
+      #version "2.15.3 -1precise0precise1" # not sure why, but this isn't working
       action :install
     end
   end
@@ -49,16 +50,22 @@ end
 
 node[:R][:packages].each do |package|
   bash "install #{package[:name]} version #{package[:version]}" do
+    user "root"
     cwd "/tmp"
-    
-    package_url = package[:source_url] ? package[:source_url] : node[:R][:default_package_url] 
+
+    package_url = package[:source_url] ? package[:source_url] : node[:R][:default_package_url]
     if package[:name] == "rJava"
       package_name = "#{package[:name]}_#{package[:version]}.tar.gz"
+      Chef::Log.info("Making sure JAVA_HOME is set")
       
+      # Java Home has to be specified before calling javareconf.  The issue is that
+      # when the box is provisioned the local env variables aren't updated to add 
+      # JAVA_HOME, therefore we are calling the /etc/profile.d/jdk.sh file
       code <<-EOH
-            sudo R CMD javareconf
+            source /etc/profile.d/jdk.sh 
+            R CMD javareconf
             wget #{package_url}/#{package_name}
-            R CMD INSTALL #{package_name}
+            R CMD INSTALL #{package_name}    
       EOH
     else
       package_name = "#{package[:name]}_#{package[:version]}.tar.gz"
@@ -74,8 +81,9 @@ end
 
 node[:R][:local_packages].each do |package|
   bash "install #{package[:name]} version #{package[:version]}" do
+    user "root"
     cwd "/tmp"
-    
+
     package_url = node[:R][:local_package_url]
     package_name = "#{package[:name]}_#{package[:version]}.tar.gz"
 
